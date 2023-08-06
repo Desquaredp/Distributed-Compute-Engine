@@ -1,0 +1,49 @@
+syntax = "proto3";
+option go_package = "./messages/resourceman_controller";
+
+
+message ResourceManagerRequest{
+
+
+    message LayoutRequest{
+        string file_name = 1;
+    }
+
+    oneof message{
+        LayoutRequest layout_request = 1;
+    }
+
+}
+
+message ControllerResponse{
+    enum ErrorCode {
+        NO_ERROR = 0;
+        FILE_NOT_FOUND = 1;
+        SERVER_ERROR = 3;
+    }
+
+    message FragLayoutResponse {
+
+        message StorageNodeInfo {
+            string storage_node_id = 1;
+            string host = 2;
+            string port = 3;
+        }
+
+        message FragmentInfo {
+            string fragment_id = 1;
+            int64 size = 2;
+            repeated StorageNodeInfo storage_node_ids = 3;
+        }
+
+        ErrorCode error_code = 1;
+        uint32 total_num_fragments = 2;
+        repeated FragmentInfo fragment_layout = 5;
+    }
+
+    oneof controller_message{
+        FragLayoutResponse frag_layout_response = 1;
+    }
+
+}
+

@@ -1,0 +1,162 @@
+syntax = "proto3";
+option go_package = "./messages/controller_client";
+
+
+/*
+controller:
+  plan:
+    stauts code enum
+    total num of fragments
+    size per fragment (map of fragments->size)
+    fragment layout (map o fragment file mapped to its storage node and replicas)
+
+  Frag layout:
+    status code enum
+    total number of fragmetns
+    size per fragments
+    frags layout
+    checksum per frag
+
+  Delete Response:
+    status code enum
+
+  ls Response:
+    status code enum
+    list of active nodes
+    disk space
+    numver of requests handled by each node
+
+Client:
+  PUT request:
+    REST option enum
+    filename
+    filesize
+    optional desisred chunk size
+
+  GET request:
+    REST option enum
+    filename
+    file size
+    optional desired chunk size
+
+  DELETE request:
+    REST option enum
+    filename
+
+  ls request:
+    REST op. enum
+ */
+
+
+
+message ControllerMessage{
+  enum StatusCode {
+    OK = 0;
+    ERROR = 1;
+    FILE_NOT_FOUND = 2;
+    FILE_ALREADY_EXISTS = 3;
+    FILE_TOO_LARGE = 4;
+  }
+
+  message PlanResponse {
+
+    message StorageNodeInfo {
+      string storage_node_id = 1;
+      string host = 2;
+      string port = 3;
+    }
+
+    message FragmentInfo {
+      string fragment_id = 1;
+      int64 size = 2;
+      repeated StorageNodeInfo storage_node_ids = 3;
+    }
+
+    StatusCode status_code = 1;
+    uint32 total_num_fragments = 2;
+    repeated FragmentInfo fragment_layout = 5;
+  }
+
+  message FragLayoutResponse {
+
+    message StorageNodeInfo {
+      string storage_node_id = 1;
+      string host = 2;
+      string port = 3;
+    }
+
+    message FragmentInfo {
+      string fragment_id = 1;
+      int64 size = 2;
+      repeated StorageNodeInfo storage_node_ids = 3;
+    }
+
+    StatusCode status_code = 1;
+    uint32 total_num_fragments = 2;
+    repeated FragmentInfo fragment_layout = 5;
+  }
+
+  message DeleteResponse {
+    StatusCode status_code = 1;
+  }
+
+  message LsResponse {
+
+    message NodeInfo {
+      string node_id = 1;
+      int64 disk_space = 2;
+      int64 num_requests_handled = 3;
+    }
+
+    StatusCode status_code = 1;
+    repeated NodeInfo active_nodes = 2;
+  }
+
+  oneof controller_message{
+    PlanResponse plan_response = 1;
+    FragLayoutResponse frag_layout_response = 2;
+    DeleteResponse delete_response = 3;
+    LsResponse ls_response = 4;
+  }
+
+}
+
+message ClientMessage{
+  enum RestOption {
+    GET = 0;
+    PUT = 1;
+    DELETE = 2;
+    LS = 3;
+  }
+
+  message PutRequest {
+    RestOption rest_option = 1;
+    string filename = 2;
+    int64 filesize = 3;
+    int64 optional_chunk_size = 4;
+  }
+
+  message GetRequest {
+    RestOption rest_option = 1;
+    string file_name = 2;
+  }
+
+  message DeleteRequest {
+    RestOption rest_option = 1;
+    string filename = 2;
+  }
+
+  message LsRequest {
+    RestOption rest_option = 1;
+  }
+
+  oneof client_message{
+    PutRequest put_request = 1;
+    GetRequest get_request = 2;
+    DeleteRequest delete_request = 3;
+    LsRequest ls_request = 4;
+  }
+//  oneof client_message {
+//    google.protobuf.Any request = 1;
+//  }
+}

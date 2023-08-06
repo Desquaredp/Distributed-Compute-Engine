@@ -1,0 +1,27 @@
+syntax = "proto3";
+option go_package = "./messages/nodeman_nodeman";
+
+message NodeManagerRequest{
+
+    enum Status{
+        SUCCESS = 0;
+        FAILURE = 1;
+    }
+
+    message ReducerFile {
+        string file_name = 1;
+        bytes file_data = 2;
+        bytes checksum = 3;
+    }
+
+    message ReducerFileResponse {
+        Status status = 1;
+    }
+
+    oneof request{
+        ReducerFile reducer_file = 1;
+        ReducerFileResponse reducer_file_response = 2;
+    }
+
+}
+

@@ -1,0 +1,82 @@
+syntax = "proto3";
+option go_package = "./messages/resourceman_nodeman";
+
+
+message ResourceManagerTaskRequest{
+
+    message Fragment{
+        string fragmentName = 1;
+        string fileName = 2;
+    }
+
+    message Setup{
+        string fileName = 1;
+        bytes job = 2;
+    }
+
+    message StorageNode{
+        string nodeID = 1;
+        string host = 2;
+        string port = 3;
+        repeated int32 reduceTaskIDs = 4;
+    }
+
+    message ReducerKeyDistribution{
+        int32 reducerTaskID = 1;
+        repeated bytes keys = 2;
+
+    }
+
+    message KeyDistribution{
+        repeated StorageNode storageNode = 1;
+        repeated ReducerKeyDistribution reducerKeyDistribution = 2;
+    }
+
+    message ReduceTask{
+        repeated int32 taskID = 1;
+        string inputFileName = 2;
+        string outputFileName = 3;
+    }
+
+
+
+    oneof task{
+        Setup setup = 1;
+        Fragment fragment = 2;
+        KeyDistribution keyDistribution = 3;
+        ReduceTask reduceTask = 4;
+    }
+}
+
+message NodeManagerTaskResponse{
+
+    enum Status{
+        SUCCESS = 0;
+        FAILURE = 1;
+    }
+
+    message Process{
+        Status status = 1;
+        string fragmentName = 2;
+        repeated bytes keys = 3;
+    }
+
+
+    message ShuffleComplete{
+        Status status = 1;
+    }
+
+    message ReduceComplete{
+        Status status = 1;
+        int32 taskID = 2;
+    }
+
+
+    oneof task{
+        Process process = 1;
+        ShuffleComplete shuffleComplete = 2;
+        ReduceComplete reduceComplete = 3;
+    }
+
+}
+
