@@ -118,9 +118,3 @@ The Resource Manager is the entry point of the execution engine. I thought of ca
 The Storage Node is responsible for storing the files in the DFS. It is also responsible for sending the files to the nodes that need them. It has to send periodic heartbeats to the Controller to let it know that it is still alive.
 ### Node Manager
 The Node Manager is responsible for executing the tasks assigned to it by the Resource Manager. It sits on the same node, but doesn't have to send periodic heartbeats to the Resource Manager or the Controller. 
-
-
-#### Changes I would make to the project:
-- External sort. Although I implemented an external sort algorithm, having credits for it would be nice. Plus, it was a lot of fun to implement.
-- Job chaining. It took me about 5 hours to implement job chaining, but it was a lot of fun. Cleaning up the previous job's leftovers was paramount to the success of job chaining.
-- Implement the 'chaos monkey' to test the system as a whole. Would be pretty cool, but impractical.
